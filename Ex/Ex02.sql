@@ -376,16 +376,85 @@ from dual;
 
 -- 2) 숫자함수
 -- ROUND(숫자, 출력을 원하는 자릿수) - 반올림
-select  round(123.346, 2) "r2"
-        ,round(123.456, 0) "r0"
+select  round(123.346, 2) r2
+        ,round(123.456, 0) r0
         ,round(123.456, -1) "r-1"
 from dual;
 
 -- TRUNC(숫자, 출력을 원하는 자릿수) - 버림
-select  trunc(123.346, 2) "r2"
-        ,trunc(123.456, 0) "r0"
+select  trunc(123.346, 2) r2
+        ,trunc(123.456, 0) r0
         ,trunc(123.456, -1) "r-1"
 from dual;
+
+
+-- 3) 날짜함수
+-- SYSDATE() -> 현재 날짜&시간 출력
+select sysdate
+from dual;
+
+select months_between('22/05/12', '22/01/01')
+from dual;
+
+select months_between(sysdate, hire_date)
+from employees
+where department_id= 110;
+
+select  first_name name
+        ,round(months_between(sysdate, hire_date), 0) "days"
+from employees
+where department_id= 110;
+
+
+-- 변환함수
+-- TO_CHAR(숫자, '출력모양') 숫자 -> 문자형 전환
+select  first_name
+        ,to_char(salary*12, '99999') "SAL"
+        -- 9(기호, 의미 X) : 자리수 표시 (99999 : 5자리만큼 표시)
+from employees
+where department_id=110;
+
+
+select  first_name
+        ,to_char(salary*12, '099999') "SAL"
+        -- 0 : 빈자리 채우기용 (기호, 의미 X)
+from employees
+where department_id=110;
+
+select  to_char(9876, '99999')
+        ,to_char(9876, '099999')
+        ,to_char(9876, '$99999')
+        ,to_char(9876, '9999.99') "소수점"
+        -- 소수점 자리를 메길 때 정수부분의 자리수가 맞아야 함
+        ,to_char(9876, '99,999') "1000 구분기호"
+        -- ,(천 단위) 구분기호
+from dual;
+
+
+-- 날짜 변환
+select  sysdate,
+        to_char(sysdate, 'YYYY-MM-DD HH24:MI:SS DAY DDTH') "24시간"
+from dual;
+
+select  sysdate,
+        to_char(sysdate, 'YY-MM-DD HH:MI:SS') "12시간"
+        -- MM : 하루를 12시간단위로 표기
+from dual;
+
+select  sysdate,
+        to_char(sysdate, 'YYYY"년" MM"월" DD"일" HH24:MI:SS DAY DDTH') "24시간"
+from dual;
+-- "년","월","일"과 같이 기본 기호(/,-과 같은)를 제외하고는 ""로 묶어서 작성해야 인식
+
+
+
+
+
+
+
+
+
+
 
 
 
