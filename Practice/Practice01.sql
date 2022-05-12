@@ -65,9 +65,7 @@ select  first_name
         ,to_char(hire_date, 'YYYY-MM')
         ,department_id
 from employees
-where department_id = 10
-or department_id = 90
-or department_id = 100;
+where department_id in (10, 90, 100);
 
 /* 문제7.
 이름(first_name에 S 또는 s 가 들어가는 직원 의 이름 , 월급 을 나타내시오*/
