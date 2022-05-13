@@ -447,7 +447,15 @@ from dual;
 -- "년","월","일"과 같이 기본 기호(/,-과 같은)를 제외하고는 ""로 묶어서 작성해야 인식
 
 
+-- nvl(컬럼명, null일때 치환할 값)
+-- nvl2(컬럼명, null이 아닐때 치환할 값, null일때 치환할 값)
 
+select  first_name
+        ,commission_pct
+        ,nvl(commission_pct, 0)
+        ,nvl2(commission_pct, 100, 0)
+        ,commission_pct
+from employees;
 
 
 
