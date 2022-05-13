@@ -87,8 +87,11 @@ order by length(department_name) desc;
 정확하지 않지만, 지사가 있을 것으로 예상되는 나라들을 나라이름을 대문자로 출력하고
 올림차순(ASC)으로 정렬해 보시오*/
 
-select upper(country_name)
-from countries
+select  Upper(ct.country_name) "나라"
+from departments dp, countries ct, locations lc
+where dp.location_id = lc.location_id
+and lc.country_id = ct.country_id
+group by ct.country_name
 order by country_name asc;
 
 
