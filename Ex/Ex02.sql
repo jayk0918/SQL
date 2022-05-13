@@ -1,3 +1,14 @@
+-- nvl(컬럼명, null일때 치환할 값)
+-- nvl2(컬럼명, null이 아닐때 치환할 값, null일때 치환할 값)
+
+select  first_name
+        ,commission_pct
+        ,nvl(commission_pct, 0)
+        ,nvl2(commission_pct, 100, 0)
+        ,commission_pct
+from employees;
+
+
 -- 그룹함수
 -- count()
 select  count(*)
@@ -84,5 +95,52 @@ and sum(salary) <= 100000
 and department_id = 90
 -- and hire_date = '04/01/01' -> not a group by expression
 order by department_id asc;
+
+-- case ~ end 문
+select  employee_id
+        ,first_name
+        ,job_id
+        ,salary
+        ,case   when job_id = 'AC_ACCOUNT' then salary + salary * 0.1
+                when job_id = 'SA_REP'  then salary + salary * 0.2
+                when job_id= 'ST_CLERK' then salary + salary * 0.3
+                else salary
+        end realSalary
+from employees;
+        
+-- decode() 문
+-- 유사 swtich case
+-- 모든 항목이 job_id의 조건이기 때문에 job_id를 생략하고 작성 가능
+select  employee_id
+        ,first_name
+        ,job_id
+        ,salary
+        ,decode(job_id, 'AC_ACCOUNT', salary + salary * 0.1,
+                        'SA_REP', salary + salary * 0.2,
+                        'ST_CLERK', salary + salary * 0.3,
+                salary) "realSalary"
+from employees
+where job_id = 'SA_REP';
+
+-- [예제]
+-- 직원의 이름, 부서, 팀을 출력하세요
+-- 팀은 코드로 결정하며 부서코드가 10~50 이면 ‘A-TEAM’
+-- 60~100 이면 ‘B-TEAM’
+-- 110~150 이면 ‘C-TEAM’
+-- 나머지는 ‘팀없음’ 으로 출력하세요.
+
+select  first_name "이름"
+        ,department_id "부서"
+        ,case   when department_id >= 10 and department_id <= 50 then 'A-TEAM'
+                when department_id >= 60 and department_id <= 100 then 'B-TEAM'
+                when department_id >= 110 and department_id <= 150 then 'C-TEAM'
+                else '팀없음'
+        end "팀"
+from employees
+order by department_id asc;
+
+
+
+
 
 
