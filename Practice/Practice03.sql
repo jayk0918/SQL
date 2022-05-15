@@ -77,13 +77,6 @@ where re.region_id = co.region_id
 order by re.region_name asc
         ,co.country_name desc;
 
-select *
-from countries;
-
-select *
-from regions;
-
-
 
 -- 문제5.
 -- 자신의 매니저보다 채용일(hire_date)이 빠른 사원의 사번(employee_id), 이름(first_name)과
