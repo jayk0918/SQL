@@ -36,7 +36,7 @@ select  em.employee_id "사번"
         ,jb.job_title "현재업무"
 from employees em, jobs jb, departments dp
 where em.job_id = jb.job_id
-and em.department_id = dp.department_id
+and em.department_id = dp.department_id(+)
 order by em.employee_id asc;
 
 
@@ -45,23 +45,43 @@ order by em.employee_id asc;
 -- 도시별로 위치한 부서들을 파악하려고 합니다.
 -- 도시아이디, 도시명, 부서명, 부서아이디를 도시아이디(오름차순)로 정렬하여 출력하세요 부서가 없는 도시는 표시하지 않습니다. (27건)
 
-
-
-
+select  lc.location_id "도시아이디"
+        ,lc.city "도시명"
+        ,dp.department_name "부서명"
+        ,dp.department_id "부서아이디"
+from locations lc, departments dp
+where dp.location_id = lc.location_id
+order by lc.location_id asc;
 
 
 -- 문제3-1. *
 -- 문제3에서 부서가 없는 도시도 표시합니다. (43건)
 
-
-
+select  lc.location_id "도시아이디"
+        ,lc.city "도시명"
+        ,dp.department_name "부서명"
+        ,dp.department_id "부서아이디"
+from locations lc, departments dp
+where dp.location_id(+) = lc.location_id
+order by lc.location_id asc;
 
 
 -- 문제4. *
 -- 지역(regions)에 속한 나라들을 지역이름(region_name), 나라이름(country_name)으로 출력하되
 -- 지역이름(오름차순), 나라이름(내림차순) 으로 정렬하세요. (25건)
 
+select  re.region_name  "지역이름"
+        ,co.country_name "나라이름"
+from regions re, countries co
+where re.region_id = co.region_id
+order by re.region_name asc
+        ,co.country_name desc;
 
+select *
+from countries;
+
+select *
+from regions;
 
 
 
@@ -78,8 +98,16 @@ order by em.employee_id asc;
 -- 나라명, 나라아이디, 도시명, 도시아이디, 부서명, 부서아이디를 나라명(오름차순)로 정렬하여 출력하세요.
 -- 값이 없는 경우 표시하지 않습니다. (27건)
 
-
-
+select  co.country_name "나라명"
+        ,co.country_id "나라아이디"
+        ,lo.city "도시명"
+        ,lo.location_id "도시아이디"
+        ,dp.department_name "부서명"
+        ,dp.department_id "부서아이디"
+from countries co, departments dp, locations lo
+where   co.country_id = lo.country_id
+and     lo.location_id = dp.location_id
+order by co.country_name asc;
 
 
 -- 문제7. *
