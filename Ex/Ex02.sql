@@ -80,6 +80,7 @@ select  emp.employee_id
         ,emp.phone_number
         ,man.manager_id
         ,man.first_name
+        ,man.phone_number
 from employees emp, employees man
 where emp.manager_id = man.employee_id(+);
 
