@@ -50,8 +50,10 @@ order by min(em.salary) desc
 --문제6. 가장 오래 근속한 직원의 입사일은 언제인가요? 다음 형식으로 출력해주세요.
 --예) 2001-01-13 토요일
 
-select to_char(min(hire_date), 'YYYY-MM-DD day') "입사일"
-from employees;
+select to_char (start_date, 'YYYY-MM-DD DAY') "입사일"
+from job_history
+where (end_date - start_date) = (select max(end_date - start_date)
+									from job_history);
 
 
 -- 문제7.
