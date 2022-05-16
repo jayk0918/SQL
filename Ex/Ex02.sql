@@ -1,4 +1,3 @@
--- hr
 -- join
 -- EQUI join
 
@@ -21,3 +20,66 @@ from employees em, departments dp, jobs jb
 where em.job_id = jb.job_id
 and em.department_id = dp.department_id
 and em.salary > 7000;
+
+
+-- <null>을 다룰 때
+-- left join
+select *
+from employees em left outer join departments dp
+on em.department_id = dp.department_id
+;
+
+-- left join(오라클 전용 문법 (+))
+select  em.first_name
+        ,em.department_id
+        ,dp.department_name
+        ,dp.department_id
+from employees em, departments dp
+where em.department_id = dp.department_id(+);
+
+
+-- right join
+select *
+from employees em right outer join departments dp
+on em.department_id = dp.department_id;
+
+
+-- right join(오라클 전용 문법 (+))
+select  em.first_name
+        ,em.department_id
+        ,dp.department_name
+        ,dp.department_id
+from employees em, departments dp
+where em.department_id(+) = dp.department_id;
+
+-- right join -> left join으로 전환 (from 구절의 순서 변환)
+select *
+from departments dp left outer join employees em
+on em.department_id = dp.department_id
+;
+
+-- full outer join (모두를 기준으로 잡을 때_합집합)
+select  em.first_name
+        ,em.department_id
+        ,dp.department_name
+        ,dp.department_id
+from employees em full outer join departments dp
+on em.department_id = dp.department_id;
+-- on em.department_id(+) = dp.department_id(+)는 사용할 수 없는 문법
+
+-- self join (본인 테이블 복제 -> 별칭지정 필수)
+select  employee_id
+        ,first_name
+        ,salary
+        ,manager_id
+from employees;
+
+select  emp.employee_id
+        ,emp.first_name
+        ,emp.salary
+        ,emp.phone_number
+        ,man.manager_id
+        ,man.first_name
+from employees emp, employees man
+where emp.manager_id = man.employee_id(+);
+
