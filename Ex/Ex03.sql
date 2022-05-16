@@ -70,7 +70,9 @@ where salary in (select salary
                 from employees
                 where department_id = 110);
 
-
+--> where 구문에 질문에 대하여
+--> 2개 이상의 답변이 들어올 경우 부등호로 판정이 불가능 (질문을 통해 값을 찾아야 함)
+--> 해결법 : in 구문을 사용함 (다중행 subQuery 찍먹)
 
 
 
