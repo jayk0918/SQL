@@ -22,7 +22,9 @@ and em.department_id = dp.department_id
 and em.salary > 7000;
 
 
--- <null>을 다룰 때
+-- <null>을 다룰 때 : Outer join
+-- (+) -> null이 올 수 있는 쪽 조건에 붙임으로써 null자료포함 출력가능
+
 -- left join
 select *
 from employees em left outer join departments dp
