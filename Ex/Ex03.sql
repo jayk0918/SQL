@@ -199,16 +199,18 @@ from    (select first_name
                 ,salary
                 ,department_id
          from employees
-         where (department_id, salary) in   (select  department_id
-                                                    ,max(salary)
-                                             from employees
-                                             group by department_id)) info
+         where (department_id, salary) in
+         
+        (select department_id
+                ,max(salary)
+          from employees
+          group by department_id)) info
         
         ,
         
         (select department_id
                 ,department_name
-         from departments) dep
+          from departments) dep
 
 where info.department_id = dep.department_id
 order by info.salary desc;
