@@ -133,20 +133,83 @@ where salary >all  (select salary
                     from employees
                     where department_id = 110);
 
+/*
+-- 각 부서별로 최고급여를 받는 사원을 출력하시오 (그룹함수)
+
+select  department_id
+        ,max(salary)
+from employees
+group by department_id;
+
+select  em.first_name
+        ,dp.department_name
+        ,em.department_id
+        ,em.salary
+from employees em, departments dp
+where em.department_id = dp.department_id;
+
+
+select  info.first_name
+        ,info.department_name
+from    (select  department_id
+                ,max(salary)
+        from employees
+        group by department_id) sal,
+        
+        (select  em.first_name
+                ,dp.department_name
+                ,em.department_id
+                ,em.salary
+        from employees em, departments dp
+        where em.department_id = dp.department_id) info
+        
+where info.department_id = sal.department_id;
+*/
+
+
+-- 조건절 비교 vs 테이블 join
+-- 각 부서별로 최고급여를 받는 사원의 이름을 출력하시오 (같은 문제, 다른 방법)
+
+-- 조건절
+select max(salary)
+from employees
+group by department_id;
+
+
+select  first_name
+        ,salary
+        ,department_id
+from employees
+where (department_id, salary) in   (select  department_id
+                                            ,max(salary)
+                                    from employees
+                                    group by department_id);
 
 
 
+--> 좀 전 문제에서 최고급여를 받는 사원 이름은 받았는데, 부서 '이름'은 나오지 않고 id로만 나와 있는 상태
+--> upgrade해서 이름(employee) + max(salary)(employee) + 부서이름(department) 조합으로 출력해보기
 
+select  info.first_name || ' ' || info.last_name "풀네임"
+        ,info.salary                             "급여"
+        ,dep.department_name                     "부서이름"
+        
+from    (select first_name
+                ,last_name
+                ,salary
+                ,department_id
+         from employees
+         where (department_id, salary) in   (select  department_id
+                                                    ,max(salary)
+                                             from employees
+                                             group by department_id)) info
+        
+        ,
+        
+        (select department_id
+                ,department_name
+         from departments) dep
 
-
-
-
-
-
-
-
-
-
-
-
+where info.department_id = dep.department_id
+order by info.salary desc;
 
