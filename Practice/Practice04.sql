@@ -131,7 +131,7 @@ and em.salary > info.avgsalary;
 -- 25건
 
 
--- case 2. employees의 실수령 급여 평균 적용
+-- case 2. employees의 실수령 급여 평균 적용 (문제 -> '부서'평균을 요구하였음 -> department)
 
 select  em.employee_id   "직원번호"
         ,em.first_name   "이름"
