@@ -147,5 +147,25 @@ and em.salary > info.avgsal;
 -- 문제8.
 -- 직원 입사일이 11번째에서 15번째의 직원의 사번, 이름, 급여, 입사일을 입사일 순서로 출력 하세요
 
+select  tbr.rn
+        ,tbr.employee_id
+        ,tbr.first_name
+        ,tbr.salary
+        ,tbr.hire_date
 
+from (select rownum rn
+       ,tb.employee_id
+       ,tb.first_name
+       ,tb.salary
+       ,tb.hire_date
+
+      from (select employee_id
+                  ,first_name
+                  ,salary
+                  ,hire_date
+            from employees
+            order by hire_date asc) tb) tbr
+
+where tbr.rn >= 11
+and tbr.rn <= 15;
 
