@@ -43,14 +43,15 @@ and rn<=5;
 
 -- 07년에 입사한 직원중 급여가 많은 직원중 3에서 7등의 이름 급여 입사일은?
 
-select  rn
-        ,first_name
-        ,hire_date
-        ,salary
+-- case 1
+select  otr.rn
+        ,otr.first_name
+        ,otr.hire_date
+        ,otr.salary
 from (select  rownum rn
-             ,first_name
-             ,hire_date
-             ,salary
+             ,ot.first_name
+             ,ot.hire_date
+             ,ot.salary
 
       from (select  first_name
                     ,hire_date
@@ -58,6 +59,29 @@ from (select  rownum rn
             from employees
             where hire_date >= '07/01/01'
             and hire_date <= '07/12/31'
-            order by salary desc))
-where rn >=3
+            order by salary desc) ot ) otr
+where rn >= 3
 and rn <= 7;
+
+-- case 2(like)
+
+select  otr.rn
+        ,otr.first_name
+        ,otr.hire_date
+        ,otr.salary
+from (select  rownum rn
+        ,ot.first_name
+        ,ot.hire_date
+        ,ot.salary
+      from (select first_name
+                  ,hire_date
+                  ,salary
+            from employees
+            where hire_date like '07%'
+            order by salary desc) ot ) otr
+where rn >= 3
+and rn <= 7;
+
+-- subQuery등을 작성할 때 실무에서는 *를 쓰지 않음
+-- 귀찮더라도 필요한 항목을 전부 작성하도록
+-- 각 쿼리문 (특히 합성할 때) 별칭을 부여해서 보다 명확성을 높이는 방향으로 
