@@ -116,12 +116,13 @@ and rn <= 20;
 select  info.first_name || ' ' || info.last_name    "이름"
         ,info.salary                                "연봉"
         ,dp.department_name                         "부서 이름"
+        ,info.hire_date             
 
 from departments dp, (select em.first_name
                             ,em.last_name
                             ,em.salary
                             ,em.department_id
-                            ,maxhire.maxdate
+                            ,maxhire.maxdate hire_date
                       from employees em, (select max(hire_date) maxdate
                                           from employees) maxhire
                       where em.hire_date = maxhire.maxdate) info
@@ -132,6 +133,48 @@ where dp.department_id = info.department_id;
 -- 문제7.
 -- 평균연봉(salary)이 가장 높은 부서 직원들의 직원번호(employee_id), 이름(firt_name), 성(last_name)과
 -- 업무(job_title), 연봉(salary)을 조회하시오.
+
+select  fin.employee_id     "직원번호"
+        ,fin.first_name     "이름"
+        ,fin.last_name      "성"
+        ,fin.salary         "급여"
+        ,fin.maxsal         "AVG_SALARY"
+        ,fin.job_title      "JOB_TITLE"
+
+from   (select rownum rn
+              ,info.employee_id
+              ,info.first_name
+              ,info.last_name
+              ,info.salary
+              ,avginfo.avgsal maxsal
+              ,info.job_title
+              ,info.department_id
+    
+        from 
+            (select  em.employee_id
+                    ,em.first_name
+                    ,em.last_name
+                    ,em.salary
+                    ,em.department_id
+                    ,jb.job_title
+             from employees em, jobs jb
+             where em.job_id = jb.job_id) info
+            
+             ,
+                    
+            (select department_id
+                    ,avg(salary) avgsal
+             from employees
+             group by department_id) avginfo
+                  
+        where info.department_id = avginfo.department_id) fin
+
+where rn >= 1
+and rn <= 3;
+
+
+
+/*
 
 select  fin.employee_id "직원번호"
         ,fin.first_name "이름"
@@ -163,7 +206,7 @@ from jobs jb, (select em.employee_id
                 where em.department_id = total.department_id) fin
                 
 where fin.job_id = jb.job_id;
-
+*/
 
 -- 문제8.
 -- 평균 급여(salary)가 가장 높은 부서는?
@@ -190,6 +233,8 @@ where dp.department_id = total.department_id;
 
 -- 문제9.
 -- 평균 급여(salary)가 가장 높은 지역은?
+
+
 
 
 
