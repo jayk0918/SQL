@@ -97,9 +97,7 @@ where author_id = 5;
 delete from author
 where author_id = 4;
 
-select count(*)
-from table_name
-where 
+
 -- 오류발생 : ora-02292 자식레코드 발견
 -- author 테이블에 있는 기안84데이터는 book테이블에서 foreign key키로 활용되는 중 (종속성을 가지고 있음)
 
@@ -114,5 +112,3 @@ select  b.book_id       "book_id"
         ,a.author_desc  "author_desc"
 from author a, book b
 where a.author_id = b.author_id;
-
-
