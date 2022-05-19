@@ -59,6 +59,31 @@ from author;
 -- 보통 foreign key(fk)와 primary key(pk)는 (반드시 같아야 하는건 아니지만) 같게 세팅
 -- 지워질 상황에 대하여 옵션을 사전에 설정할 수 있음
 -- 옵션을 설정하지 않을 경우의 기본 옵션 : 에러메세지 & 삭제 X
+
+-- 참고(에러메세지)
+-- - 오류 보고 -
+/* ORA-02449: 외래 키에 의해 참조되는 고유/기본 키가 테이블에 있습니다
+-- 02449. 00000 -  "unique/primary keys in table referenced by foreign keys"
+-- *Cause:    An attempt was made to drop a table with unique or
+           primary keys referenced by foreign keys in another table.
+*Action:   Before performing the above operations the table, drop the
+           foreign key constraints in other tables. You can see what
+           constraints are referencing a table by issuing the following
+           command:
+           SELECT * FROM USER_CONSTRAINTS WHERE TABLE_NAME = "tabnam";오류 보고 -
+ORA-02449: 외래 키에 의해 참조되는 고유/기본 키가 테이블에 있습니다
+02449. 00000 -  "unique/primary keys in table referenced by foreign keys"
+*Cause:    An attempt was made to drop a table with unique or
+           primary keys referenced by foreign keys in another table.
+*Action:   Before performing the above operations the table, drop the
+           foreign key constraints in other tables. You can see what
+           constraints are referencing a table by issuing the following
+           command:
+           SELECT * FROM USER_CONSTRAINTS WHERE TABLE_NAME = "tabnam";*/
+
+
+
+
 -- on delecte cascade : 해당 fk를 가진 참조행도 삭제
 -- on delete set null : 해당 fk를 null로 바꿈
 
@@ -106,4 +131,128 @@ select *
 from book;
 
 delete from book;
+
+drop table book;
+drop table author;
+
+-- sequence (은행 번호표)
+
+create table author(
+    author_id number(10)
+    ,author_name varchar2(100) not null
+    ,author_desc varchar2(500)
+    ,primary key (author_id)
+);
+
+-- 상황부여 : author db에 수많은 data가 존재한다고 할 때
+-- 현재는 author_id에 1, 2 등 직접 순서를 부여했지만 자료량이 많아 직접부여가 어려울 때
+
+create sequence seq_author_id
+increment by 1
+start with 1
+nocache;
+-- 오류(빨간줄)표시는 dog무시해도됨 (버그인듯)
+-- nocache : 캐시메모리를 남기지 않음(속도 차원)
+-- sequence가 계속 동작하다가 끝났을 때 다음에 생성 예정이었던 seqence를 향후 재소환하지 않고 다시 1부터 시작함 
+
+insert into author
+values(seq_author_id.nextval, '박경리', '토지 작가');
+
+insert into author
+values(seq_author_id.nextval, '이문열', '삼국지 작가');
+
+insert into author
+values(seq_author_id.nextval, '기안84', '웹툰 작가');
+
+insert into author
+values(seq_author_id.nextval, '자까', '웹툰 작가');
+
+select *
+from author;
+
+-- sequence 조회
+select *
+from user_sequences;
+
+-- sequence 최근 번호
+select seq_author_id.currval
+from dual;
+
+-- 다음 sequence 조회
+-- 주의 : nextval은 실행할 때 마다 시퀀스가 증가함
+-- 이 때문에 sequence가 연속적으로 숫자가 나오지 않고 중간에 구멍이 생길 수 있음
+-- 하지만 sequence와 그에 연동된 pk에서 중요한건 '겹치지 않는' 것임, 시퀀스가 비거나 이상해도 신경쓰지 말 것
+select seq_author_id.nextval
+from dual;
+
+-- sequence 삭제
+drop sequence seq_author_id;
+-- 번호표 발급 기계를 없앤것일 뿐 author 테이블에 영향을 주지 않음
+-- 이미 부여된 sequence 번호 또한 존재함
+
+
+insert into author
+values(seq_author_id.nextval, '자까', '대학일기');
+
+select *
+from author;
+
+commit;
+-- 테이블 수정사항 최종반영 commend
+
+insert into author
+values(seq_author_id.nextval, '주호민', '머머리여행');
+
+rollback;
+-- 다른 내용을 넣었다가 commit 시점으로 회귀하고자 할 때 
+-- insert / update / delete / select 4가지 요소만 확정 및 롤백 가능 (테이블 자체 손상은 복구 불가능)
+-- cf) transaction
+-- commit & rollback의 본래 용도는 실수를 되돌리는 수단이 아님 / 다만 기능이 그렇기에 이용할 수 있음
+-- commit : '작업'의 단위
+-- ex) 은행 이체 시 (commit)(-1000원) -> (+1000원)의 사이클이 돌아야 하는데
+-- (-1000원) -> (오류) 이게 된다면 / (-1000원) -> (+1000원)의 사이클은 작업의 단위임
+-- 오류가 발생했으므로 rollback -> commit시점으로 회귀하여 다시 작업에 들어가야 함(bugfix required)
+
+
+-- 일괄실행 시나리오
+drop table author;
+drop sequence seq_author_id;
+
+-- create table
+create table author(
+    author_id number(10)
+    ,author_name varchar2(100) not null
+    ,author_desc varchar2(500)
+    ,primary key (author_id)
+);
+
+-- sequence
+create sequence seq_author_id
+increment by 1
+start with 1
+nocache;
+
+-- author data insert
+insert into author
+values(seq_author_id.nextval, '박경리', '토지작가');
+
+insert into author
+values(seq_author_id.nextval, '이문열', '삼국지작가');
+
+insert into author
+values(seq_author_id.nextval, '자까', '웹툰작가');
+
+-- update
+update author
+set author_name = '정다정'
+    ,author_desc = '역전 야매요리'
+where author_id = 3;
+
+-- print
+select *
+from author;
+
+
+
+
 
